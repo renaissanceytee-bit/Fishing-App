@@ -2,8 +2,11 @@
 
 A comprehensive community-focused fishing application with affordable subscription plans.
 
+**Now Available on Web! 🌐** - Use it in your browser without downloading anything!
+
 ## 🎯 Quick Links
 
+- **[Web Deployment Guide](WEB_DEPLOYMENT_GUIDE.md)** - Run on web and deploy ⭐ NEW!
 - **[Installation Guide](INSTALLATION_GUIDE.md)** - Detailed setup instructions
 - **[API Testing Guide](API_TESTING_GUIDE.md)** - Test all API endpoints
 - **[Deployment Guide](DEPLOYMENT_GUIDE.md)** - Deploy to production
@@ -67,17 +70,37 @@ A comprehensive community-focused fishing application with affordable subscripti
 - Stripe for payments
 - OpenAI for AI features
 
-### Mobile App
-- React Native + Expo
+### Mobile & Web App
+- React Native + Expo (iOS, Android, Web)
 - TypeScript
 - React Navigation
 - React Native Paper (Material Design)
 - React Query for data fetching
 - Socket.IO client
+- React Native Web for browser support
 
 ## 🚀 Quick Start
 
-### Automated Setup
+### Try it on Web (No Installation!)
+
+```bash
+# Start the backend
+cd backend
+cp .env.example .env
+# Edit .env with your configuration
+npx prisma migrate dev
+npm run dev
+
+# In another terminal, start the web app
+cd mobile
+npm run web
+```
+
+Your browser will open to `http://localhost:8081` - the app is ready to use! 🎉
+
+See [WEB_DEPLOYMENT_GUIDE.md](WEB_DEPLOYMENT_GUIDE.md) for web deployment.
+
+### Mobile Development Setup
 ```bash
 # Run setup script
 ./setup.sh
@@ -101,6 +124,7 @@ See [INSTALLATION_GUIDE.md](INSTALLATION_GUIDE.md) for detailed instructions.
 
 ## 📚 Documentation
 
+- **[WEB_DEPLOYMENT_GUIDE.md](WEB_DEPLOYMENT_GUIDE.md)** - Web deployment guide ⭐ NEW!
 - **[INSTALLATION_GUIDE.md](INSTALLATION_GUIDE.md)** - Complete setup guide
 - **[API_TESTING_GUIDE.md](API_TESTING_GUIDE.md)** - API testing documentation  
 - **[DEPLOYMENT_GUIDE.md](DEPLOYMENT_GUIDE.md)** - Production deployment
@@ -123,7 +147,7 @@ See [INSTALLATION_GUIDE.md](INSTALLATION_GUIDE.md) for detailed instructions.
 - AI features (OpenAI)
 - Weather integration
 
-✅ **Complete Mobile App** (React Native + Expo)
+✅ **Complete Mobile & Web App** (React Native + Expo + Web)
 - 10+ fully functional screens
 - Bottom tab + stack navigation
 - Material Design 3 UI
@@ -131,6 +155,14 @@ See [INSTALLATION_GUIDE.md](INSTALLATION_GUIDE.md) for detailed instructions.
 - GPS location tracking
 - Real-time updates
 - Offline support
+- **Web browser support** ⭐ NEW!
+
+✅ **Promotional Website** ⭐ NEW!
+- Beautiful landing page
+- Feature showcase
+- Pricing comparison
+- Responsive design
+- SEO optimized
 
 ✅ **Comprehensive Documentation**
 - Installation guides
@@ -152,6 +184,7 @@ See [INSTALLATION_GUIDE.md](INSTALLATION_GUIDE.md) for detailed instructions.
 
 ### vs Fishbrain
 - ✅ **50% More Affordable** - $2.99-$9.99/mo vs $9.99-$14.99/mo
+- ✅ **Web Access** - Use in browser, no download needed ⭐ NEW!
 - ✅ **Enhanced Community** - Clubs, events, mentorship
 - ✅ **Gear Marketplace** - Buy/sell/rent equipment
 - ✅ **Guide Booking** - Find and book fishing guides
@@ -175,7 +208,7 @@ See [INSTALLATION_GUIDE.md](INSTALLATION_GUIDE.md) for detailed instructions.
 - **AI:** OpenAI API
 - **Weather:** OpenWeatherMap
 
-### Mobile
+### Mobile & Web
 - **Framework:** React Native + Expo 50
 - **Language:** TypeScript
 - **UI Library:** React Native Paper (Material Design 3)
@@ -184,6 +217,14 @@ See [INSTALLATION_GUIDE.md](INSTALLATION_GUIDE.md) for detailed instructions.
 - **Maps:** React Native Maps
 - **HTTP:** Axios
 - **Storage:** AsyncStorage
+- **Web Support:** React Native Web ⭐ NEW!
+- **DOM:** React DOM (for web) ⭐ NEW!
+
+### Promotional Website ⭐ NEW!
+- **HTML5:** Semantic markup
+- **CSS3:** Modern responsive design
+- **Vanilla JS:** No framework needed
+- **SEO:** Optimized meta tags
 
 ### DevOps
 - **Version Control:** Git + GitHub

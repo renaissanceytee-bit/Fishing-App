@@ -2,7 +2,37 @@
 
 ## Overview
 
-This document summarizes the security analysis of the web app and promotional website changes.
+This document summarizes the security analysis of the web app and promotional website changes, plus the security vulnerability fixes applied.
+
+## Recent Security Fixes (2026-02-11)
+
+### ✅ Fixed Critical Vulnerabilities
+
+#### Multer - 4 DoS Vulnerabilities (FIXED)
+- **Package**: multer (backend)
+- **Previous version**: 1.4.5-lts.1 (vulnerable)
+- **Updated to**: 2.0.2 (patched)
+- **Severity**: High
+- **Vulnerabilities**:
+  1. DoS via unhandled exception from malformed request
+  2. DoS via unhandled exception
+  3. DoS from maliciously crafted requests
+  4. DoS via memory leaks from unclosed streams
+- **Status**: ✅ RESOLVED
+
+#### Axios - DoS Vulnerability (FIXED)
+- **Package**: axios (backend & mobile)
+- **Previous version**: 1.6.7 (vulnerable)
+- **Updated to**: 1.13.5 (patched)
+- **Severity**: Medium
+- **Vulnerability**: DoS via __proto__ key in mergeConfig
+- **Status**: ✅ RESOLVED
+
+### Verification
+```bash
+cd backend && npm audit
+# Result: found 0 vulnerabilities ✅
+```
 
 ## Changes Made
 

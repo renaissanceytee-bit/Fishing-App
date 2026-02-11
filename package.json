@@ -10,9 +10,12 @@
   ],
   "scripts": {
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:mobile\"",
+    "dev:web": "concurrently \"npm run dev:backend\" \"npm run web --workspace=mobile\"",
     "dev:backend": "npm run dev --workspace=backend",
     "dev:mobile": "npm run start --workspace=mobile",
+    "web": "npm run web --workspace=mobile",
     "build": "npm run build --workspace=backend && npm run build --workspace=mobile",
+    "build:web": "npm run web --workspace=mobile -- --no-dev --minify",
     "test": "npm run test --workspaces",
     "lint": "eslint . --ext .ts,.tsx"
   },

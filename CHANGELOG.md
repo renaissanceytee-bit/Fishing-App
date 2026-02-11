@@ -17,6 +17,58 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.1.0] - 2026-02-11
+
+### ✨ Web Support & Promotional Website
+
+#### 🌐 New Features
+- **Web App Support**: Full React Native app now runs in web browsers
+  - Access via browser without downloading app
+  - Responsive design for all screen sizes
+  - Same features as mobile app
+  - Built with React Native Web and Expo
+
+- **Promotional Website**: Beautiful landing page for marketing
+  - Hero section with key statistics
+  - Comprehensive feature showcase
+  - Pricing comparison with competitors
+  - Download/CTA sections
+  - Fully responsive design
+  - SEO optimized
+
+#### 📝 Documentation
+- Added `WEB_DEPLOYMENT_GUIDE.md` for web deployment instructions
+- Added `WEB_QUICKSTART.md` for quick web setup
+- Updated `README.md` with web capabilities
+- Added convenience scripts for web development
+
+#### 🛠️ Configuration
+- Updated `mobile/app.json` with web settings
+- Added custom `web/index.html` for web app
+- Added promotional website in `website/` directory
+- Created startup scripts (`start-web.sh`, `serve.sh`)
+- Added web-specific npm scripts to root `package.json`
+
+#### 🎨 Website Structure
+```
+website/
+├── index.html     # Promotional landing page
+├── styles.css     # Responsive styling
+├── serve.sh       # Development server script
+└── README.md      # Website documentation
+```
+
+#### 🚀 Quick Start
+```bash
+# Start web app
+cd mobile && npm run web
+
+# View promotional site
+cd website && ./serve.sh
+```
+
+---
+
 ## [1.0.0] - 2026-02-08
 
 ### ✨ Initial Release

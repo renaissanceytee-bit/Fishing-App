@@ -1,0 +1,16 @@
+🎣 WANT TO TEST THE MOBILE APP RIGHT NOW? 🎣
+
+Just run this one command:
+
+    chmod +x test-mobile.sh && ./test-mobile.sh
+
+That's it! The script will:
+✅ Install all dependencies automatically
+✅ Give you 4 testing options (web, device, iOS, Android)
+✅ Launch the app for testing
+
+For detailed instructions:
+📖 See TESTING_QUICKSTART.md
+📖 See MOBILE_TESTING.md
+
+Happy Testing! 🚀

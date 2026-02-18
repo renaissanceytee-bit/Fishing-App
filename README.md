@@ -4,9 +4,18 @@ A comprehensive community-focused fishing application with affordable subscripti
 
 **Now Available on Web! 🌐** - Use it in your browser without downloading anything!
 
+## 🚀 Want to Test the Mobile App Right Now?
+
+```bash
+chmod +x test-mobile.sh && ./test-mobile.sh
+```
+
+**That's it!** The script will guide you through testing options. See [TESTING_QUICKSTART.md](TESTING_QUICKSTART.md) for details.
+
 ## 🎯 Quick Links
 
-- **[Mobile Testing Guide](MOBILE_TESTING.md)** - Test the mobile app quickly ⭐ NEW!
+- **[Testing Quick Start](TESTING_QUICKSTART.md)** - Visual guide to testing ⭐ NEW!
+- **[Mobile Testing Guide](MOBILE_TESTING.md)** - Comprehensive testing documentation ⭐ NEW!
 - **[Web Deployment Guide](WEB_DEPLOYMENT_GUIDE.md)** - Run on web and deploy
 - **[Installation Guide](INSTALLATION_GUIDE.md)** - Detailed setup instructions
 - **[API Testing Guide](API_TESTING_GUIDE.md)** - Test all API endpoints

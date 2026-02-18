@@ -6,7 +6,8 @@ A comprehensive community-focused fishing application with affordable subscripti
 
 ## 🎯 Quick Links
 
-- **[Web Deployment Guide](WEB_DEPLOYMENT_GUIDE.md)** - Run on web and deploy ⭐ NEW!
+- **[Mobile Testing Guide](MOBILE_TESTING.md)** - Test the mobile app quickly ⭐ NEW!
+- **[Web Deployment Guide](WEB_DEPLOYMENT_GUIDE.md)** - Run on web and deploy
 - **[Installation Guide](INSTALLATION_GUIDE.md)** - Detailed setup instructions
 - **[API Testing Guide](API_TESTING_GUIDE.md)** - Test all API endpoints
 - **[Deployment Guide](DEPLOYMENT_GUIDE.md)** - Deploy to production
@@ -119,6 +120,23 @@ npm run seed
 ```
 
 See [INSTALLATION_GUIDE.md](INSTALLATION_GUIDE.md) for detailed instructions.
+
+### Quick Mobile Testing ⚡
+
+Want to test the mobile app right now? Use our automated testing script:
+
+```bash
+# One command to test the mobile app
+chmod +x test-mobile.sh
+./test-mobile.sh
+```
+
+This interactive script will:
+1. Install all dependencies automatically
+2. Let you choose: Web browser, Physical device, iOS simulator, or Android emulator
+3. Launch the app for testing immediately
+
+See [MOBILE_TESTING.md](MOBILE_TESTING.md) for comprehensive testing guide.
 
 ---
 

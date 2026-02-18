@@ -1,0 +1,46 @@
+{
+  "expo": {
+    "name": "Fishing App",
+    "slug": "fishing-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.fishingapp.app",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "We need your location to show nearby catches and fishing spots",
+        "NSCameraUsageDescription": "We need camera access to take photos of your catches",
+        "NSPhotoLibraryUsageDescription": "We need photo library access to select catch photos"
+      }
+    },
+    "android": {
+      "package": "com.fishingapp.app",
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow Fishing App to use your location."
+        }
+      ]
+    ]
+  }
+}

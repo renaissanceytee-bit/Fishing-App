@@ -1,0 +1,487 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  USER
+  ADMIN
+  MODERATOR
+  GUIDE
+}
+
+enum SubscriptionTier {
+  FREE
+  BASIC
+  PRO
+  ELITE
+}
+
+enum CatchVisibility {
+  PUBLIC
+  FRIENDS
+  PRIVATE
+}
+
+enum TournamentStatus {
+  UPCOMING
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+model User {
+  id                String            @id @default(uuid())
+  email             String            @unique
+  username          String            @unique
+  password          String
+  fullName          String?
+  bio               String?
+  avatar            String?
+  role              UserRole          @default(USER)
+  subscriptionTier  SubscriptionTier  @default(FREE)
+  subscriptionExpiry DateTime?
+  location          String?
+  latitude          Float?
+  longitude         Float?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  lastActive        DateTime          @default(now())
+  isVerified        Boolean           @default(false)
+  
+  // Relations
+  catches           Catch[]
+  posts             Post[]
+  comments          Comment[]
+  likes             Like[]
+  followers         Follow[]          @relation("Followers")
+  following         Follow[]          @relation("Following")
+  messages          Message[]         @relation("Sender")
+  receivedMessages  Message[]         @relation("Receiver")
+  clubs             ClubMember[]
+  tournaments       TournamentEntry[]
+  achievements      UserAchievement[]
+  ratings           Rating[]
+  marketplace       MarketplaceItem[]
+  bookings          Booking[]
+  trips             Trip[]
+  mentorships       Mentorship[]      @relation("Mentor")
+  learning          Mentorship[]      @relation("Mentee")
+  reports           Report[]
+  environmentScore  Int               @default(0)
+  
+  @@index([email])
+  @@index([username])
+  @@index([subscriptionTier])
+}
+
+model Catch {
+  id              String            @id @default(uuid())
+  userId          String
+  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  speciesId       String?
+  species         Species?          @relation(fields: [speciesId], references: [id])
+  customSpecies   String?
+  weight          Float?
+  length          Float?
+  photos          String[]
+  videos          String[]
+  latitude        Float
+  longitude       Float
+  locationName    String
+  waterBody       String?
+  waterDepth      Float?
+  waterTemp       Float?
+  technique       String?
+  bait            String?
+  lure            String?
+  weather         Json?
+  moonPhase       String?
+  timestamp       DateTime          @default(now())
+  visibility      CatchVisibility   @default(PUBLIC)
+  description     String?
+  isReleased      Boolean           @default(false)
+  likes           Like[]
+  comments        Comment[]
+  createdAt       DateTime          @default(now())
+  
+  @@index([userId])
+  @@index([speciesId])
+  @@index([timestamp])
+  @@index([latitude, longitude])
+}
+
+model Species {
+  id              String   @id @default(uuid())
+  name            String
+  scientificName  String?
+  description     String?
+  habitat         String?
+  averageWeight   Float?
+  averageLength   Float?
+  seasonalInfo    Json?
+  techniques      String[]
+  baits           String[]
+  photos          String[]
+  conservationStatus String?
+  catches         Catch[]
+  
+  @@index([name])
+}
+
+model Post {
+  id          String    @id @default(uuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  content     String
+  media       String[]
+  type        String    @default("post") // post, recipe, tutorial, tip
+  latitude    Float?
+  longitude   Float?
+  likes       Like[]
+  comments    Comment[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  @@index([userId])
+  @@index([createdAt])
+  @@index([type])
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  catchId   String?
+  catch     Catch?   @relation(fields: [catchId], references: [id], onDelete: Cascade)
+  postId    String?
+  post      Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  content   String
+  createdAt DateTime @default(now())
+  
+  @@index([catchId])
+  @@index([postId])
+  @@index([userId])
+}
+
+model Like {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  catchId   String?
+  catch     Catch?   @relation(fields: [catchId], references: [id], onDelete: Cascade)
+  postId    String?
+  post      Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  
+  @@unique([userId, catchId])
+  @@unique([userId, postId])
+  @@index([catchId])
+  @@index([postId])
+}
+
+model Follow {
+  id          String   @id @default(uuid())
+  followerId  String
+  follower    User     @relation("Following", fields: [followerId], references: [id], onDelete: Cascade)
+  followingId String
+  following   User     @relation("Followers", fields: [followingId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  
+  @@unique([followerId, followingId])
+  @@index([followerId])
+  @@index([followingId])
+}
+
+model Message {
+  id         String   @id @default(uuid())
+  senderId   String
+  sender     User     @relation("Sender", fields: [senderId], references: [id], onDelete: Cascade)
+  receiverId String
+  receiver   User     @relation("Receiver", fields: [receiverId], references: [id], onDelete: Cascade)
+  content    String
+  isRead     Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  
+  @@index([senderId, receiverId])
+  @@index([createdAt])
+}
+
+model Club {
+  id          String       @id @default(uuid())
+  name        String
+  description String?
+  location    String?
+  latitude    Float?
+  longitude   Float?
+  avatar      String?
+  coverPhoto  String?
+  isPublic    Boolean      @default(true)
+  members     ClubMember[]
+  events      Event[]
+  createdAt   DateTime     @default(now())
+  
+  @@index([location])
+}
+
+model ClubMember {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  clubId    String
+  club      Club     @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  role      String   @default("member") // member, moderator, admin
+  joinedAt  DateTime @default(now())
+  
+  @@unique([userId, clubId])
+  @@index([clubId])
+}
+
+model Event {
+  id          String    @id @default(uuid())
+  clubId      String?
+  club        Club?     @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  eventType   String    // tournament, meetup, cleanup, educational
+  startDate   DateTime
+  endDate     DateTime?
+  location    String
+  latitude    Float?
+  longitude   Float?
+  maxParticipants Int?
+  createdAt   DateTime  @default(now())
+  
+  @@index([startDate])
+  @@index([eventType])
+}
+
+model Tournament {
+  id          String             @id @default(uuid())
+  title       String
+  description String?
+  startDate   DateTime
+  endDate     DateTime
+  status      TournamentStatus   @default(UPCOMING)
+  rules       Json?
+  prizes      Json?
+  entryFee    Float              @default(0)
+  location    String?
+  entries     TournamentEntry[]
+  createdAt   DateTime           @default(now())
+  
+  @@index([status])
+  @@index([startDate])
+}
+
+model TournamentEntry {
+  id           String     @id @default(uuid())
+  userId       String
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tournamentId String
+  tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+  score        Float      @default(0)
+  rank         Int?
+  createdAt    DateTime   @default(now())
+  
+  @@unique([userId, tournamentId])
+  @@index([tournamentId])
+}
+
+model Achievement {
+  id          String             @id @default(uuid())
+  name        String
+  description String
+  icon        String
+  category    String             // catch, social, conservation, education
+  requirement Json
+  users       UserAchievement[]
+  
+  @@index([category])
+}
+
+model UserAchievement {
+  id            String      @id @default(uuid())
+  userId        String
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievementId String
+  achievement   Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+  unlockedAt    DateTime    @default(now())
+  
+  @@unique([userId, achievementId])
+  @@index([userId])
+}
+
+model Rating {
+  id         String   @id @default(uuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  targetType String   // location, guide, gear
+  targetId   String
+  rating     Float
+  review     String?
+  photos     String[]
+  createdAt  DateTime @default(now())
+  
+  @@unique([userId, targetType, targetId])
+  @@index([targetType, targetId])
+}
+
+model Location {
+  id              String   @id @default(uuid())
+  name            String
+  description     String?
+  latitude        Float
+  longitude       Float
+  waterBody       String?
+  locationType    String   // lake, river, ocean, pond
+  facilities      String[]
+  accessibility   String?
+  photos          String[]
+  averageRating   Float    @default(0)
+  totalRatings    Int      @default(0)
+  regulations     Json?
+  createdAt       DateTime @default(now())
+  
+  @@index([latitude, longitude])
+  @@index([locationType])
+}
+
+model MarketplaceItem {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String
+  description String
+  category    String   // rod, reel, lure, bait, boat, other
+  condition   String   // new, like-new, good, fair
+  price       Float
+  isRental    Boolean  @default(false)
+  rentalPrice Float?
+  rentalPeriod String? // hourly, daily, weekly
+  photos      String[]
+  location    String?
+  latitude    Float?
+  longitude   Float?
+  isSold      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  
+  @@index([userId])
+  @@index([category])
+  @@index([isSold])
+}
+
+model Guide {
+  id             String    @id @default(uuid())
+  name           String
+  description    String?
+  specialty      String[]
+  experience     Int       // years
+  location       String
+  latitude       Float?
+  longitude      Float?
+  hourlyRate     Float
+  photos         String[]
+  rating         Float     @default(0)
+  totalBookings  Int       @default(0)
+  bookings       Booking[]
+  createdAt      DateTime  @default(now())
+  
+  @@index([location])
+  @@index([rating])
+}
+
+model Booking {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  guideId   String
+  guide     Guide    @relation(fields: [guideId], references: [id], onDelete: Cascade)
+  date      DateTime
+  duration  Int      // hours  totalPrice Float
+  status    String   @default("pending") // pending, confirmed, completed, cancelled
+  createdAt DateTime @default(now())
+  
+  @@index([userId])
+  @@index([guideId])
+  @@index([date])
+}
+
+model Trip {
+  id           String   @id @default(uuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title        String
+  description  String?
+  startDate    DateTime
+  endDate      DateTime?
+  locations    Json[]
+  participants String[]
+  isPublic     Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  
+  @@index([userId])
+  @@index([startDate])
+}
+
+model Mentorship {
+  id        String   @id @default(uuid())
+  mentorId  String
+  mentor    User     @relation("Mentor", fields: [mentorId], references: [id], onDelete: Cascade)
+  menteeId  String
+  mentee    User     @relation("Mentee", fields: [menteeId], references: [id], onDelete: Cascade)
+  status    String   @default("pending") // pending, active, completed
+  specialty String?
+  startedAt DateTime @default(now())
+  
+  @@unique([mentorId, menteeId])
+  @@index([mentorId])
+  @@index([menteeId])
+}
+
+model Report {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  targetType  String   // user, catch, post, comment
+  targetId    String
+  reason      String
+  description String?
+  status      String   @default("pending") // pending, reviewed, resolved
+  createdAt   DateTime @default(now())
+  
+  @@index([targetType, targetId])
+  @@index([status])
+}
+
+model Subscription {
+  id                String   @id @default(uuid())
+  userId            String   @unique
+  tier              SubscriptionTier
+  stripeCustomerId  String?  @unique
+  stripeSubscriptionId String? @unique
+  status            String   // active, cancelled, past_due
+  currentPeriodEnd  DateTime?
+  cancelAtPeriodEnd Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  @@index([userId])
+  @@index([status])
+}
+
+model WeatherCache {
+  id        String   @id @default(uuid())
+  latitude  Float
+  longitude Float
+  data      Json
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  
+  @@index([latitude, longitude])
+  @@index([expiresAt])
+}

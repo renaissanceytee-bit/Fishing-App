@@ -1,0 +1,169 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  # Backend Tests and Linting
+  backend:
+    name: Backend CI
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: fishing_app_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ./backend
+        run: npm ci
+
+      - name: Generate Prisma Client
+        working-directory: ./backend
+        run: npx prisma generate
+
+      - name: Run database migrations
+        working-directory: ./backend
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/fishing_app_test
+        run: npx prisma migrate deploy
+
+      - name: Type check
+        working-directory: ./backend
+        run: npx tsc --noEmit
+
+      - name: Lint code
+        working-directory: ./backend
+        run: npm run lint || echo "Linting not configured"
+
+      # - name: Run tests
+      #   working-directory: ./backend
+      #   env:
+      #     DATABASE_URL: postgresql://postgres:postgres@localhost:5432/fishing_app_test
+      #     JWT_SECRET: test-secret
+      #     NODE_ENV: test
+      #   run: npm test || echo "Tests not configured"
+
+  # Mobile App Build Check
+  mobile:
+    name: Mobile CI
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: mobile/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ./mobile
+        run: npm ci
+
+      - name: Type check
+        working-directory: ./mobile
+        run: npx tsc --noEmit
+
+      - name: Lint code
+        working-directory: ./mobile
+        run: npm run lint || echo "Linting not configured"
+
+  # Shared types check
+  shared:
+    name: Shared Types CI
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: shared/package-lock.json
+
+      - name: Install dependencies
+        working-directory: ./shared
+        run: npm ci
+
+      - name: Type check
+        working-directory: ./shared
+        run: npx tsc --noEmit
+
+  # Security audit
+  security:
+    name: Security Audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Audit backend dependencies
+        working-directory: ./backend
+        run: npm audit --audit-level=high || echo "Vulnerabilities found"
+
+      - name: Audit mobile dependencies
+        working-directory: ./mobile
+        run: npm audit --audit-level=high || echo "Vulnerabilities found"
+
+  # Code quality check
+  quality:
+    name: Code Quality
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Check for TODOs
+        run: |
+          if grep -r "TODO:" --include="*.ts" --include="*.tsx" .; then
+            echo "::warning::Found TODO comments in code"
+          fi
+
+      - name: Check for console.log
+        run: |
+          if grep -r "console.log" --include="*.ts" --include="*.tsx" --exclude-dir=node_modules .; then
+            echo "::warning::Found console.log statements"
+          fi
